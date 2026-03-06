@@ -1,3 +1,5 @@
 #psycopg2
 flask
 psycopg2-binary
+azure-identity
+azure-keyvault-secrets

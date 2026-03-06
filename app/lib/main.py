@@ -3,6 +3,7 @@ import logging
 from flask import Flask, jsonify
 import psycopg2
 from config.config import Config
+import utils.azure_vault as vault_utils
 import os
 
 # Logging configuration
@@ -23,13 +24,15 @@ app = Flask(__name__)
 
 def get_db_connection():
     try:
+        logger.info('Fetching database credentials from Azure Key Vault.')
+        db_username, db_password = vault_utils.get_db_credentials()
         logger.info('Attempting to connect to the database.')
         conn = psycopg2.connect(
             host=Config.DB_HOST,
             port=Config.DB_PORT,
             dbname=Config.DB_NAME,
-            user=Config.DB_USER,
-            password=Config.DB_PASSWORD,
+            user=db_username,
+            password=db_password,
             sslmode='require'
         )
         logger.info('Database connection established.')
