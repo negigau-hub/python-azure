@@ -129,9 +129,15 @@ stages:
               sudo systemctl status myflaskapp
             displayName: 'Start/Resart Gunicorn service'
           
-          - script: |
+          - bash: |
               echo "Verifying app is running..."
-              curl -f http://localhost:8080 || echo "app is not responding"
-            displayName: 'Check if web app is running'
+              sleep 5
+              curl --max-time 10 \
+                   --retry 3 \
+                   --retry-delay 3 \
+                   --retry-connrefused \
+                   -f http://localhost:8080/ \
+                    || (echo "Web app is not responding after deployment" && exit 1)
+            displayName: 'Health Check'
             continueOnError: true
           
