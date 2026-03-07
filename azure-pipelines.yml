@@ -11,7 +11,7 @@ variables:
   azureServiceConnectionId: '12d03d7f-9011-4de2-b31a-ab4a4d8aab8a'
 
   # Web app name
-  webAppName: ''
+  webAppName: 'myflaskapp'
 
   # Agent VM image name
   #vmImageName: 'ubuntu-latest'
