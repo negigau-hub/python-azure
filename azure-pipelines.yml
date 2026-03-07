@@ -118,7 +118,7 @@ stages:
               [Install]
               WantedBy=multi-user.target
               EOF'
-              displayName: 'Write systemd service file'
+            displayName: 'Write systemd service file'
           
           - script: |
               echo "Reloading and resarting service..."
