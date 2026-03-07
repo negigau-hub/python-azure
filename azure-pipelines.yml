@@ -46,7 +46,7 @@ stages:
         echo "Removing unnecessary files to reduce package size"
         rm -rf $(projectRoot)/.git
         rm -rf $(projectRoot)/__pycache__
-        rm -rf $(projectRoot)/venv
+        rm -rf $(projectRoot)/antenv
         find $(projectRoot) -name "*.pyc" -delete
       displayName: 'Clean up files'
 
