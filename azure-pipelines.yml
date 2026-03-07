@@ -32,7 +32,7 @@ stages:
     pool:
       name: Default
     steps:
-    - task: UsePythonVersion@0
+    #- task: UsePythonVersion@0
       inputs:
         versionSpec: '$(pythonVersion)'
       displayName: 'Use Python $(pythonVersion)'
@@ -73,7 +73,7 @@ stages:
         deploy:
           steps:
 
-          - task: UsePythonVersion@0
+          #- task: UsePythonVersion@0
             inputs:
               versionSpec: '$(pythonVersion)'
             displayName: 'Use Python version'
