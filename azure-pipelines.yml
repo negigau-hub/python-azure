@@ -78,3 +78,5 @@ stages:
               pip3 install -r requirements.txt
               nohup gunicorn app:app --bind 0.0.0.0:8080 &
             displayName: 'Run Web App'
+          # prevent artifact publishing
+          publish: none
