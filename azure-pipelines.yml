@@ -69,7 +69,9 @@ stages:
         deploy:
           steps:
           - script: |
-              cd app
+              mkdir -p /home/azureuser/dist
+              cp -r $(Build.SourcesDirectory)/* /home/azureuser/dist
+              cd /home/azureuser/dist
               python3 -m venv antenv
               source antenv/bin/activate
               pip3 install --upgrade pip
