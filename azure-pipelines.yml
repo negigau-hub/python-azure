@@ -22,7 +22,7 @@ variables:
   # Project root folder. Point to the folder containing manage.py file.
   projectRoot: $(System.DefaultWorkingDirectory)
 
-  pythonVersion: '3.11'
+  pythonVersion: '3.12.3'
 
 stages:
 - stage: Build
@@ -68,12 +68,11 @@ stages:
       runOnce:
         deploy:
           steps:
-
-          #- task: UsePythonVersion@0
-
-          - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App : '
-            inputs:
-              azureSubscription: $(azureServiceConnectionId)
-              appName: $(webAppName)
-              package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
+          - script: |
+              cd app
+              python3 -m venv antenv
+              source antenv/bin/activate
+              pip3 install --upgrade pip
+              pip3 install -r requirements.txt
+              nohup gunicorn app:app --bind 0.0.0.0:8080 &
+            displayName: 'Run Web App'
