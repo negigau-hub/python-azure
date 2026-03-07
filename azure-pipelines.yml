@@ -69,14 +69,61 @@ stages:
         deploy:
           steps:
           - script: |
+              echo "creating deployment directory and setting permissions"
               mkdir -p /home/azureuser/dist
-              cp -r $(Build.SourcesDirectory)/* /home/azureuser/dist
+              sudo chown -R $USER:$USER /home/azureuser/dist
+            displayName: 'Prepare deoployment directory'
+          
+          - script: |
+              echo "Copying source code to vm location and running web app"
+              rsync -av --delete \
+                --exclude='.git' \
+                --exclude='*.pyc' \
+                --exclude='__pycache__' \
+                --exclude='.venv' \
+                --exclude='tests' \
+                $(System.DefaultWorkingDirectory)/ /home/azureuser/dist/
+            displayName: 'Copy source code to VM'
+
+          - script: |
+              echo "Installing dependencies on VM"
               cd /home/azureuser/dist
               python3 -m venv antenv
               source antenv/bin/activate
               pip3 install --upgrade pip
               pip3 install -r requirements.txt
-              nohup gunicorn app:app --bind 0.0.0.0:8080 &
-            displayName: 'Run Web App'
-          # prevent artifact publishing
-          publish: none
+            displayName: 'Install dependencies on VM'
+
+          - script: |
+              echo "writing systemd service file for web app"
+              sudo bash -c 'cat > /etc/systemd/system/myflaskapp.service <<EOF
+              [Unit]
+              Description=My Flask App
+              After=network.target
+
+              [Service]
+              User=azureuser
+              WorkingDirectory=/home/azureuser/dist
+              ExecStart=/home/azureuser/dist/antenv/bin/gunicorn app:app --bind 0.0.0.0:8080
+              Restart=always
+
+              [Install]
+              WantedBy=multi-user.target
+              EOF'
+              displayName: 'Write systemd service file'
+          
+          - script: |
+              echo "Reloading and resarting service..."
+              sudo systemctl daemon-reload
+              sudo systemctl enable myflaskapp
+              sudo systemctl restart myflaskapp
+              sleep 3
+              sudo systemctl status myflaskapp
+            displayName: 'Start/Resart Gunicorn service'
+          
+          - script: |
+              echo "Verifying app is running..."
+              curl -f http://localhost:8080 || echo "app is not responding"
+            displayName: 'Check if web app is running'
+            continueOnError: true
+          
