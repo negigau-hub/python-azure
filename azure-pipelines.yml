@@ -112,7 +112,10 @@ stages:
               [Service]
               User=azureuser
               WorkingDirectory=/home/azureuser/dist
-              ExecStart=/home/azureuser/dist/antenv/bin/gunicorn app:app --bind 0.0.0.0:8080
+              ExecStart=/home/azureuser/dist/antenv/bin/gunicorn app:app 
+              --bind 0.0.0.0:8080
+              --access-logfile /var/log/myflaskapp_access.log
+              --error-logfile /var/log/myflaskapp_error.log
               Restart=always
 
               [Install]
