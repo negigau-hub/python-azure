@@ -2,8 +2,8 @@
 import logging
 from flask import Flask, jsonify
 import psycopg2
-from config.config import Config
-import utils.azure_vault as vault_utils
+from app.lib.config.config import Config
+import app.lib.utils.azure_vault as vault_utils
 import os
 
 print("Starting the Flask application...")
