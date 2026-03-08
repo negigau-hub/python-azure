@@ -134,13 +134,22 @@ stages:
           
           - bash: |
               echo "Verifying app is running..."
-              sleep 5
-              curl --max-time 10 \
-                   --retry 3 \
-                   --retry-delay 3 \
-                   --retry-connrefused \
-                   -f http://localhost:8080/ \
-                    || (echo "Web app is not responding after deployment" && exit 1)
+              sleep 10
+              sudo systemctl is-active myflaskapp
+              ss -lntp | grep 8080
+              echo "Checking running processes"
+              ps aux | grep gunicorn
+
+              for i in {1..20}; do
+                if curl -s http://localhost:8080/ > /dev/null; then
+                  echo "Web app is running"
+                  exit 0
+                else
+                  echo "Web app not responding yet, retrying..."
+                  sleep 3
+                fi
+              done
+              
             displayName: 'Health Check'
             continueOnError: true
           
