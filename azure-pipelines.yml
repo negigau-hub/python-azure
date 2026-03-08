@@ -112,6 +112,7 @@ stages:
               [Service]
               User=azureuser
               WorkingDirectory=/home/azureuser/dist
+              Environment="PYTHONPATH=/home/azureuser/dist"
               Environment="PATH=/home/azureuser/dist/antenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
               Environment="VIRTUAL_ENV=/home/azureuser/dist/antenv"
               ExecStart=/home/azureuser/dist/antenv/bin/gunicorn app.lib.main:app --bind 0.0.0.0:8080 --access-logfile /var/log/myflaskapp_access.log --error-logfile /var/log/myflaskapp_error.log
