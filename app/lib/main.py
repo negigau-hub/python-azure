@@ -6,6 +6,7 @@ from config.config import Config
 import utils.azure_vault as vault_utils
 import os
 
+print("Starting the Flask application...")
 # Logging configuration
 log_dir = Config.LOG_DIR
 log_file = os.path.join(log_dir, 'app.log')
