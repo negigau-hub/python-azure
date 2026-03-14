@@ -38,7 +38,7 @@ stages:
         source antenv/bin/activate
         python3 -m pip install --upgrade pip
         pip3 install setup
-        pip3 install -r app/requirements.txt
+        pip3 install -r requirements.txt
       workingDirectory: $(projectRoot)
       displayName: "Install requirements"
 
@@ -99,7 +99,7 @@ stages:
               python3 -m venv antenv
               source antenv/bin/activate
               pip3 install --upgrade pip
-              pip3 install -r app/requirements.txt
+              pip3 install -r requirements.txt
             displayName: 'Install dependencies on VM'
 
           - script: |
