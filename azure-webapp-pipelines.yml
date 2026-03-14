@@ -30,7 +30,9 @@ stages:
   jobs:
   - job: BuildJob
     pool:
-      name: Default  
+      name: Default
+    steps:
+
 
     - script: |
         python -m venv antenv
@@ -66,7 +68,8 @@ stages:
     strategy:
       runOnce:
         deploy:
-        
+          steps:
+
           - task: AzureWebApp@1
             displayName: 'Deploy Azure Web App : '
             inputs:
