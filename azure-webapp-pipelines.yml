@@ -30,12 +30,7 @@ stages:
   jobs:
   - job: BuildJob
     pool:
-      name: Default
-    steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '$(pythonVersion)'
-      displayName: 'Use Python $(pythonVersion)'
+      name: Default  
 
     - script: |
         python -m venv antenv
@@ -71,13 +66,7 @@ stages:
     strategy:
       runOnce:
         deploy:
-          steps:
-
-          - task: UsePythonVersion@0
-            inputs:
-              versionSpec: '$(pythonVersion)'
-            displayName: 'Use Python version'
-
+        
           - task: AzureWebApp@1
             displayName: 'Deploy Azure Web App : '
             inputs:
