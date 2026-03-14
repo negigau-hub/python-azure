@@ -3,4 +3,4 @@ flask
 psycopg2-binary
 azure-identity
 azure-keyvault-secrets
-gunicorn
+gunicorn==20.0.2

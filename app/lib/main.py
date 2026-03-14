@@ -42,7 +42,11 @@ def get_db_connection():
         logger.error(f'Failed to connect to the database: {e}')
         raise
 
-@app.route('/', methods=['GET'])
+@app.route("/")
+def home():
+    return "OK"
+
+@app.route('/data', methods=['GET'])
 def get_data():
     logger.info('Received request for data.')
     conn = None

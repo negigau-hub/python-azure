@@ -140,6 +140,7 @@ stages:
               echo "Checking running processes"
               ps aux | grep gunicorn
 
+              echo "Performing health check on web app endpoint"
               for i in {1..20}; do
                 if curl -s http://localhost:8080/ > /dev/null; then
                   echo "Web app is running"
