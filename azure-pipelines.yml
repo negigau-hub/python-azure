@@ -42,14 +42,6 @@ stages:
       workingDirectory: $(projectRoot)
       displayName: "Install requirements"
 
-    - script: |
-        echo "Removing unnecessary files to reduce package size"
-        rm -rf $(projectRoot)/.git
-        rm -rf $(projectRoot)/__pycache__
-        rm -rf $(projectRoot)/antenv
-        find $(projectRoot) -name "*.pyc" -delete
-      displayName: 'Clean up files'
-
     - task: ArchiveFiles@2
       displayName: 'Archive files'
       inputs:
