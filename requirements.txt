@@ -4,3 +4,5 @@ psycopg2-binary
 azure-identity
 azure-keyvault-secrets
 gunicorn
+azure-appconfiguration
+azure-appconfiguration-provider

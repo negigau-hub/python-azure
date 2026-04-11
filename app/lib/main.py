@@ -1,10 +1,11 @@
-
 import logging
 from flask import Flask, jsonify
 import psycopg2
 from app.lib.config.config import Config
 import app.lib.utils.azure_vault as vault_utils
 import os
+from azure.identity import DefaultAzureCredential
+from azure.appconfiguration.provider import load
 
 print("Starting the Flask application...")
 # Logging configuration
@@ -52,6 +53,10 @@ def get_data():
     conn = None
     cur = None
     try:
+
+        config = load(endpoint = "https://my-app-config-001.azconfig.io", credential=DefaultAzureCredential())
+        print(f"app.debug: {config['app.debug']}")
+        
         conn = get_db_connection()
         cur = conn.cursor()
         logger.info('Executing SQL query.')
@@ -60,7 +65,13 @@ def get_data():
         colnames = [desc[0] for desc in cur.description]
         data = [dict(zip(colnames, row)) for row in rows]
         logger.info(f'Retrieved {len(data)} records from the database.')
-        return jsonify(data), 200
+        # Include the app.debug flag in the response
+        debug_flag = config['app.debug']
+        response = {
+            'data': data,
+            'app_debug': debug_flag
+        }
+        return jsonify(response), 200
     except Exception as e:
         logger.error(f'Error retrieving data: {e}')
         return jsonify({'error': str(e)}), 500
