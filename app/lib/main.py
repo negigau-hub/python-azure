@@ -4,6 +4,7 @@ import psycopg2
 from app.lib.config.config import Config
 import app.lib.utils.azure_vault as vault_utils
 import os
+from azure.appconfiguration import AzureAppConfigurationClient
 from azure.identity import DefaultAzureCredential
 from azure.appconfiguration.provider import load
 
@@ -54,8 +55,14 @@ def get_data():
     cur = None
     try:
 
-        config = load(endpoint = "https://my-app-config-001.azconfig.io", credential=DefaultAzureCredential())
-        print(f"app.debug: {config['app.debug']}")
+        endpoint = "https://my-app-config-001.azconfig.io"
+        credential = DefaultAzureCredential()
+
+        client = AzureAppConfigurationClient(endpoint, credential)
+
+        # Retrieve a key
+        setting = client.get_configuration_setting(key="app.debug")
+
         
         conn = get_db_connection()
         cur = conn.cursor()
@@ -66,7 +73,7 @@ def get_data():
         data = [dict(zip(colnames, row)) for row in rows]
         logger.info(f'Retrieved {len(data)} records from the database.')
         # Include the app.debug flag in the response
-        debug_flag = config['app.debug']
+        debug_flag = setting.value if setting else "Not found"
         response = {
             'data': data,
             'app_debug': debug_flag
