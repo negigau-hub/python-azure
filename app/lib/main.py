@@ -6,7 +6,6 @@ import app.lib.utils.azure_vault as vault_utils
 import os
 from azure.appconfiguration import AzureAppConfigurationClient
 from azure.identity import DefaultAzureCredential
-from azure.appconfiguration.provider import load
 
 print("Starting the Flask application...")
 # Logging configuration
@@ -54,15 +53,17 @@ def get_data():
     conn = None
     cur = None
     try:
-
-        endpoint = "https://my-app-config-001.azconfig.io"
-        credential = DefaultAzureCredential()
-
-        client = AzureAppConfigurationClient(endpoint, credential)
-
-        # Retrieve a key
-        setting = client.get_configuration_setting(key="app.debug")
-
+        logger.info('Retrieving app.debug configuration from Azure App Configuration.')
+        try:
+            endpoint = "https://my-app-config-001.azconfig.io"
+            credential = DefaultAzureCredential()
+            client = AzureAppConfigurationClient(endpoint, credential)
+            setting = client.get_configuration_setting(key="app.debug")
+            debug_flag = setting.value if setting else "Not found"
+            logger.info(f'Retrieved app.debug value: {debug_flag}')
+        except Exception as config_error:
+            logger.warning(f'Failed to retrieve app.debug from Azure App Configuration: {config_error}')
+            debug_flag = "Error: " + str(config_error)
         
         conn = get_db_connection()
         cur = conn.cursor()
@@ -72,15 +73,14 @@ def get_data():
         colnames = [desc[0] for desc in cur.description]
         data = [dict(zip(colnames, row)) for row in rows]
         logger.info(f'Retrieved {len(data)} records from the database.')
-        # Include the app.debug flag in the response
-        debug_flag = setting.value if setting else "Not found"
+        
         response = {
             'data': data,
             'app_debug': debug_flag
         }
         return jsonify(response), 200
     except Exception as e:
-        logger.error(f'Error retrieving data: {e}')
+        logger.error(f'Error retrieving data: {e}', exc_info=True)
         return jsonify({'error': str(e)}), 500
     finally:
         if cur:
