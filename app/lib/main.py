@@ -61,6 +61,14 @@ def get_data():
             setting = client.get_configuration_setting(key="app.debug")
             debug_flag = setting.value if setting else "Not found"
             logger.info(f'Retrieved app.debug value: {debug_flag}')
+
+            key = f".appconfig.featureflag/feature.logging"
+            feature = client.get_configuration_setting(key=key)
+            if feature and feature.value:
+                logger.info(f'Feature flag {key} is enabled.')
+            else:
+                logger.info(f'Feature flag {key} is not enabled or not found.')
+
         except Exception as config_error:
             logger.warning(f'Failed to retrieve app.debug from Azure App Configuration: {config_error}')
             debug_flag = "Error: " + str(config_error)
@@ -76,7 +84,8 @@ def get_data():
         
         response = {
             'data': data,
-            'app_debug': debug_flag
+            'app_debug': debug_flag,
+            'feature_logging': feature.value if feature and feature.value else "Not enabled"
         }
         return jsonify(response), 200
     except Exception as e:
