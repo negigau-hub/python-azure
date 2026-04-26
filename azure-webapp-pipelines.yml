@@ -5,6 +5,12 @@
 
 trigger:
 - main
+  papths:
+    include:
+      - app/**
+    exclude:
+      - azure-functions/**
+
 
 pool:
  name: Default

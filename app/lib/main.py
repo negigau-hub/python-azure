@@ -77,7 +77,7 @@ def get_data():
         # Fetch data from Azure Function
         logger.info('Fetching data from Azure Function.')
         try:
-            response_func = requests.get('http://localhost:7071/api/get_users')
+            response_func = requests.get('https://func-rg-lab.azurewebsites.net/api/get_users')
             response_func.raise_for_status()
             logger.info('Successfully retrieved data from Azure Function.')
             import ast
