@@ -5,12 +5,6 @@
 
 trigger:
 - main
-  paths:
-    include:
-      - app/**
-    exclude:
-      - azure-functions/**
-
 
 pool:
  name: Default
