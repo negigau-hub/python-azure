@@ -6,3 +6,4 @@ azure-keyvault-secrets
 gunicorn
 azure-appconfiguration
 azure-appconfiguration-provider
+requests
