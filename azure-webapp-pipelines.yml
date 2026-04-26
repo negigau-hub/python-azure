@@ -5,7 +5,7 @@
 
 trigger:
 - main
-  papths:
+  paths:
     include:
       - app/**
     exclude:
