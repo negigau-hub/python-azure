@@ -3,3 +3,11 @@
 # azure-monitor-opentelemetry
 
 azure-functions
+psycopg2-binary
+azure-identity
+azure-keyvault-secrets
+azure-appconfiguration
+azure-appconfiguration-provider
+requests
+numpy
+pandas

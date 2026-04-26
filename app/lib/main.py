@@ -6,6 +6,7 @@ import app.lib.utils.azure_vault as vault_utils
 import os
 from azure.appconfiguration import AzureAppConfigurationClient
 from azure.identity import DefaultAzureCredential
+import requests
 
 print("Starting the Flask application...")
 # Logging configuration
@@ -73,14 +74,19 @@ def get_data():
             logger.warning(f'Failed to retrieve app.debug from Azure App Configuration: {config_error}')
             debug_flag = "Error: " + str(config_error)
         
-        conn = get_db_connection()
-        cur = conn.cursor()
-        logger.info('Executing SQL query.')
-        cur.execute('SELECT * FROM users;')
-        rows = cur.fetchall()
-        colnames = [desc[0] for desc in cur.description]
-        data = [dict(zip(colnames, row)) for row in rows]
-        logger.info(f'Retrieved {len(data)} records from the database.')
+        # Fetch data from Azure Function
+        logger.info('Fetching data from Azure Function.')
+        try:
+            response_func = requests.get('http://localhost:7071/api/get_users')
+            response_func.raise_for_status()
+            logger.info('Successfully retrieved data from Azure Function.')
+            import ast
+            data = ast.literal_eval(response_func.text)
+        except Exception as func_error:
+            logger.error(f'Error fetching data from Azure Function: {func_error}')
+            data = []
+
+
         
         response = {
             'data': data,
